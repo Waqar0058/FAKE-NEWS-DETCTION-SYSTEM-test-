@@ -1,0 +1,10 @@
+secret.key
+accounts.json
+history.csv
+trusted_facts.csv
+venv/
+__pycache__/
+combined_final/
+combined_final_v2/
+english_final/
+urdu_final/
