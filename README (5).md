@@ -186,19 +186,6 @@ Every prediction is saved with its result in `trusted_facts.csv` (guests include
 - The supporting facts and web sources are computed internally but are not yet displayed.
 - One prediction is processed at a time; intended for local or small-scale use.
 
-## Evaluation results
-
-| Model / system | Language | Accuracy | Precision | Recall | F1 |
-|---|---|---|---|---|---|
-| Final ensemble | English | | | | |
-| Final ensemble | Urdu | | | | |
-
-*(Fill in from your validation results.)*
-
-## Datasets
-
-- English: WELFake dataset (Kaggle)
-- Urdu: Urdu fake news datasets by Maaz Amjad (GitHub)
 
 ## Authors
 
@@ -206,7 +193,3 @@ Every prediction is saved with its result in `trusted_facts.csv` (guests include
 - Ahsan Ali Naveed (DSAI232102032)
 
 **Supervisor:** Mr. Safdar Hussain
-
-## License
-
-Add a license of your choice (for example MIT) or state that the project is for academic use only.
