@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fake News Detection System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-screen="auth">
+  <div class="app">
+
+    <!-- ===== Top bar ===== -->
+    <header class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span>FAKE NEWS DETECTION SYSTEM</span>
+      </div>
+      <div class="top-right">
+        <span class="mode-badge hidden" id="modeBadge">Guest mode</span>
+        <div class="clock" id="clock"></div>
+        <button class="btn ghost exit-btn" id="exitBtn" type="button">Exit</button>
+      </div>
+    </header>
+
+    <!-- ===== Sidebar ===== -->
+    <nav class="sidebar" aria-label="Main menu">
+      <button class="nav-btn active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-page="history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v5l3 2"/></svg>
+        <span>History</span><svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Sign in required"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </button>
+      <button class="nav-btn" data-page="analytics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+        <span>Analytics</span><svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Sign in required"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </button>
+      <button class="nav-btn" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- ===== Pages ===== -->
+    <main class="content">
+
+      <!-- Dashboard / prediction -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-body">
+          <h1 class="page-title">NEWS PREDICTION</h1>
+          <div class="card">
+            <div class="lang-row">
+              <span class="label">Select news language:</span>
+              <button class="lang-btn" data-lang="english" aria-pressed="false">English</button>
+              <button class="lang-btn" data-lang="urdu" aria-pressed="false">اردو (Urdu)</button>
+            </div>
+
+            <textarea id="newsText" disabled placeholder="Select a language first..." spellcheck="false"></textarea>
+
+            <div class="actions">
+              <button id="predictBtn" class="btn primary" disabled>Predict News</button>
+              <button id="clearBtn" class="btn ghost">Clear</button>
+              <button id="kbToggle" class="btn ghost" disabled>Keyboard</button>
+            </div>
+
+            <div id="error" class="error hidden" role="alert"></div>
+
+            <div id="result" class="result hidden" aria-live="polite">
+              <div id="resultLabel" class="result-label"></div>
+              <div class="result-score">Prediction score: <b id="resultScore"></b></div>
+              <div class="bar"><div id="scoreBar"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- On-screen keyboard -->
+        <div id="keyboard" class="keyboard hidden">
+          <div class="kb-head">
+            <span id="kbTitle"></span>
+            <button id="kbHide" class="kb-close" aria-label="Hide keyboard">&#10005;</button>
+          </div>
+          <div id="keys"></div>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section id="page-history" class="page">
+        <div class="page-body">
+          <h1 class="page-title">HISTORY</h1>
+          <div class="card wide">
+            <div class="range-row" data-group="history" role="group" aria-label="Time range">
+              <span class="label">Show records from:</span>
+              <button class="range-btn" data-range="all">All</button>
+              <button class="range-btn" data-range="today">Today</button>
+              <button class="range-btn" data-range="7">1 week</button>
+              <button class="range-btn" data-range="15">15 days</button>
+              <button class="range-btn" data-range="30">30 days</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>News</th><th>Language</th><th>Label</th><th>Score</th><th>Added</th><th>Action</th></tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics -->
+      <section id="page-analytics" class="page">
+        <div class="page-body">
+          <h1 class="page-title">ANALYTICS</h1>
+          <div class="card wide">
+            <div class="range-row" data-group="analytics" role="group" aria-label="Time range">
+              <span class="label">Show records from:</span>
+              <button class="range-btn" data-range="today">Today</button>
+              <button class="range-btn" data-range="7">1 week</button>
+              <button class="range-btn" data-range="15">15 days</button>
+              <button class="range-btn" data-range="30">30 days</button>
+            </div>
+            <div class="stats" id="stats"></div>
+            <div class="chart-grid">
+              <div class="chart-card span">
+                <h3>Records over time</h3>
+                <div id="chartTime"></div>
+                <div class="legend"><span><i class="dot good"></i>True</span><span><i class="dot bad"></i>False</span></div>
+              </div>
+              <div class="chart-card">
+                <h3>True vs False</h3>
+                <div class="donut-wrap" id="chartDonut"></div>
+                <div class="legend"><span><i class="dot good"></i>True</span><span><i class="dot bad"></i>False</span></div>
+              </div>
+              <div class="chart-card">
+                <h3>Language</h3>
+                <div id="chartLang"></div>
+              </div>
+              <div class="chart-card span">
+                <h3>Prediction score</h3>
+                <div id="chartScore"></div>
+              </div>
+            </div>
+            <p class="note" id="analyticsNote"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Locked (guests who open History / Analytics) -->
+      <section id="page-locked" class="page">
+        <div class="page-body">
+          <h1 class="page-title">SIGN IN REQUIRED</h1>
+          <div class="card caution">
+            <div class="caution-sign" aria-hidden="true">&#9888;&#65039;</div>
+            <p class="caution-text" role="alert">For these services kindly sign in</p>
+            <div class="actions center">
+              <button id="lockedSignin" class="btn primary" type="button">Sign in</button>
+              <button id="lockedSignup" class="btn ghost" type="button">Create account</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section id="page-settings" class="page">
+        <div class="page-body">
+          <h1 class="page-title">SETTINGS</h1>
+          <div class="card">
+            <h2 class="section-title">Text color</h2>
+            <div class="swatches" id="textSwatches"></div>
+            <h2 class="section-title">Background color</h2>
+            <div class="swatches" id="bgSwatches"></div>
+            <p class="note" id="settingsMsg"></p>
+            <button id="resetTheme" class="btn ghost">Reset to default</button>
+          </div>
+          <div class="card mongo" id="mongoCard">
+            <h2 class="section-title">MongoDB database</h2>
+            <div id="mongoStatus" class="mongo-line off">Checking MongoDB...</div>
+            <div class="stats" id="mongoStats"></div>
+            <div class="table-wrap" id="mongoRecent"></div>
+            <div class="actions">
+              <button id="mongoRefresh" class="btn ghost">Refresh</button>
+              <button id="mongoSync" class="btn primary">Copy CSV data to MongoDB</button>
+            </div>
+            <p class="note" id="mongoMsg"></p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Sign in / Sign up ===== -->
+  <div id="screen-auth" class="screen">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <button class="top-pill" id="guestBtn" type="button">Explore as Guest <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <div class="glass-card">
+      <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
+
+      <form id="signinForm" class="auth-form" novalidate>
+        <h2>Welcome Back &#128075;</h2>
+        <p class="subtext">Sign in to continue</p>
+        <label class="input-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="siEmail" placeholder="Email Address" autocomplete="email" required></label>
+        <label class="input-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="siPass" placeholder="Password" autocomplete="current-password" required></label>
+        <div class="options"><label class="check"><input type="checkbox" id="siRemember"> Remember me</label></div>
+        <div class="auth-msg hidden" id="siError" role="alert"></div>
+        <button type="submit" class="auth-btn" id="siBtn"><span>Sign In</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <p class="switch">Don't have an account? <button type="button" class="link-btn" data-go="signup">Register</button></p>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden" novalidate>
+        <h2>Create Account &#10024;</h2>
+        <p class="subtext">Sign up to unlock every feature</p>
+        <label class="input-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="suEmail" placeholder="Email Address" autocomplete="email" required></label>
+        <label class="input-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="suPass" placeholder="Password (min. 8 characters)" autocomplete="new-password" required></label>
+        <label class="input-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="suConfirm" placeholder="Confirm Password" autocomplete="new-password" required></label>
+        <div class="auth-msg hidden" id="suError" role="alert"></div>
+        <button type="submit" class="auth-btn" id="suBtn"><span>Sign Up</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <p class="switch">Already have an account? <button type="button" class="link-btn" data-go="signin">Sign in</button></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Feedback (signed-in users, when they close the application) ===== -->
+  <div id="screen-feedback" class="screen">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <button class="top-pill" id="fbClose" type="button">Close &#10005;</button>
+    <div class="glass-card">
+      <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z"/></svg></div>
+      <h2>How was your experience?</h2>
+      <p class="subtext">Tell us what you think about this project</p>
+      <div class="stars" id="stars" role="group" aria-label="Rating"></div>
+      <textarea id="fbComment" class="glass-text" maxlength="500" rows="4" placeholder="Write a short comment about the project..." spellcheck="true"></textarea>
+      <div class="counter" id="fbCount">0 / 500</div>
+      <div class="auth-msg hidden" id="fbError" role="alert"></div>
+      <button type="button" class="auth-btn" id="fbSubmit"><span>Submit Feedback</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="switch"><button type="button" class="link-btn" id="fbSkip">Skip and exit</button></p>
+    </div>
+  </div>
+
+  <!-- ===== Thanks ===== -->
+  <div id="screen-thanks" class="screen">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <div class="glass-card">
+      <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></div>
+      <h2>Thanks for using the application</h2>
+      <p class="subtext" id="thanksText"></p>
+      <button type="button" class="auth-btn" id="thanksPrimary"><span></span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="switch"><button type="button" class="link-btn hidden" id="thanksSecondary"></button></p>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
